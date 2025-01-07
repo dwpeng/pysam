@@ -16,8 +16,8 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu, macos]
-        build: ["cp36-* cp37-* cp38-* cp39-*", "cp310-* cp311-* cp312-*"]
-        x64image: [manylinux_2_28]
+        build: ["cp36-* cp37-* cp38-* cp39-*", "cp310-* cp311-* cp312-*", "cp313-*"]
+        x64image: [manylinux_2_17]
         nametag: [none]
 
         include:
@@ -42,70 +42,16 @@ jobs:
 
           CIBW_MANYLINUX_X86_64_IMAGE:  ${{ matrix.x64image }}
           CIBW_MANYLINUX_I686_IMAGE:    manylinux2014
-          CIBW_MANYLINUX_AARCH64_IMAGE: manylinux_2_28
+          CIBW_MANYLINUX_AARCH64_IMAGE: manylinux_2_17
 
       - name: Check wheelhouse
         run:  devtools/artifactname.py wheelhouse/*.whl >> $GITHUB_ENV
         env:
           NAMETAG: ${{ matrix.nametag }}
 
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v4
+      - uses: ncipollo/release-action@v1.14.0
         with:
-          name: ${{ env.artifactname }}
-          path: wheelhouse/*.whl
-
-  build_sdist:
-    runs-on: ubuntu-latest
-    env:
-      job_python_version: "3.10"
-
-    steps:
-      - name: Checkout pysam
-        uses: actions/checkout@v4
-
-      - name: Set up Python ${{ env.job_python_version }}
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ env.job_python_version }}
-
-      - name: Install prerequisite Python libraries
-        run:  pip install cython
-
-      - name: Install build prerequisites
-        run: |
-          sudo apt-get update
-          sudo apt-get install -q --no-install-recommends --no-install-suggests libcurl4-openssl-dev
-
-      - name: Create source distribution
-        run:  python setup.py sdist --owner=root --group=root
-
-      - uses: actions/upload-artifact@v4
-        with:
-          name: sdist
-          path: dist/pysam-*.tar.gz
-
-  upload_pypi:
-    needs: [build_wheels, build_sdist]
-    runs-on: ubuntu-latest
-    environment: ${{ github.event_name == 'release' && 'pypi' || 'testpypi' }}
-
-    permissions:
-      id-token: write
-
-    steps:
-      - name: Get artifacts
-        uses: actions/download-artifact@v4
-        with:
-          merge-multiple: true
-          path: dist
-
-      - name: Publish distribution to Test PyPI
-        if: github.event_name == 'push'
-        uses: pypa/gh-action-pypi-publish@release/v1
-        with:
-          repository-url: https://test.pypi.org/legacy/
-
-      - name: Publish distribution to PyPI
-        if: github.event_name == 'release' && github.event.action == 'published'
-        uses: pypa/gh-action-pypi-publish@release/v1
+          artifacts: "wheelhouse/*.whl"
+          allowUpdates: true
+          omitNameDuringUpdate: true
+          omitBodyDuringUpdate: true
