@@ -2,10 +2,6 @@ name: Publish wheels
 
 on:
   push:
-    branches:
-      - v[0-9]+.*
-    tags:
-      - v[0-9]+.*
   release:
     types:
       - published
