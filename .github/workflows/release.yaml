@@ -21,8 +21,13 @@ jobs:
       - uses: actions/checkout@v4
         with:
           submodules: recursive
+      - uses: uraimo/run-on-arch-action@v2
+        name: Set arch
+        with: 
+          arch: ${{ matrix.arch }}
+          distro: ${{ matrix.os }}
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: 3.11
       - name: Install dependencies
