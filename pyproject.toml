@@ -22,6 +22,10 @@ requires = ["setuptools>=59.0", "Cython>=0.29.12,<4"]
 build-backend = "setuptools.build_meta:__legacy__"
 
 [tool.cibuildwheel]
+before-all = "{project}/devtools/install-prerequisites.sh"
+# Necessary until we build libhts.a out-of-tree from within build_temp
+before-build = "make -C {project}/htslib distclean"
+
 test-requires = ["pytest"]
 test-command = "REF_PATH=: pytest {project}/tests"
 
