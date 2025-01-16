@@ -15,7 +15,7 @@ jobs:
         os: [ubuntu-latest]
         python-version: [38, 39, 310, 311, 312, 313]
         manylinux-image: [manylinux2014]
-        arch: [x86_64]
+        arch: [x86_64, aarch64]
 
     steps:
       - uses: actions/checkout@v3
