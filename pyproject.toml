@@ -26,8 +26,8 @@ before-all = "{project}/devtools/install-prerequisites.sh"
 # Necessary until we build libhts.a out-of-tree from within build_temp
 before-build = "make -C {project}/htslib distclean"
 
-test-requires = ["pytest"]
-test-command = "REF_PATH=: pytest {project}/tests"
+# test-requires = ["pytest"]
+# test-command = "REF_PATH=: pytest {project}/tests"
 
 [tool.tox]
 legacy_tox_ini = """

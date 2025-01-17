@@ -1,7 +1,6 @@
 name: Publish wheels
 
 on:
-  push:
   release:
     types:
       - published
