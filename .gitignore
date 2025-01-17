@@ -12,9 +12,6 @@ tests/*.c
 tests/*.pyxbldc
 tests/*.sam
 tests/*.fai
-tests/pysam_data
-tests/cbcf_data
-tests/tabix_data
 
 samtools/config.h
 samtools/samtools_config_vars.h
